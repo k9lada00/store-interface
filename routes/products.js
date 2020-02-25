@@ -4,12 +4,27 @@ const Product = require('../models/product');
 const mongoose = require('mongoose');
 const config = require('config');
 const db = config.get('mongoURI');
+const authChecker = require('../auth/auth-checker');
 
 const bodyParser = require('body-parser');
-
 const multer = require('multer');
+ 
+const storage = multer.diskStorage(
+    {
+        destination: function(req, file, cb)
+        {
+            cb(null, './uploads');
+        },
+        filename: function(req, file, cb)
+        {
+            cb(null, /*new Date().toISOString() + */file.originalname);
+        }
+    }
+);
+//const upload = ({storage: storage});
+const upload = multer({storage: storage});
 
-const upload = multer({dest: 'uploads/'});
+
 
 //   START
 // Get Information on ALL products
@@ -51,9 +66,34 @@ router.get('/', (req, res, next) => {
     });
 });
 
-// NEW Post Product Information
-router.post('/', upload.single('productImage1'), upload.single('productImage2'), 
-                 upload.single('productImage3'), upload.single('productImage4'), 
+//Get by product Id
+router.get('/:productId', (req, res, next) => {
+    const id = req.params.productId;
+    Product.findById(id)
+    .exec()
+    .then(doc => {
+        console.log("From database", doc);
+        if(doc) {
+            res.status(200).json(doc);
+        } else{
+            res.status(404).json({
+                message: 'No valid entry for Id'
+            });
+        }
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+});
+
+// START PROTECTED ROUTES
+
+// Post Product Information
+router.post('/', authChecker, upload.single('productImage1'), upload.single('productImage2'), 
+                 upload.single('productImage3'), upload.single('productImage4'),
                  (req, res, next) => {
     const product = new Product({
         _id: new mongoose.Types.ObjectId(),
@@ -96,31 +136,8 @@ router.post('/', upload.single('productImage1'), upload.single('productImage2'),
     });
 });
 
-//Get by product Id
-router.get('/:productId', (req, res, next) => {
-    const id = req.params.productId;
-    Product.findById(id)
-    .exec()
-    .then(doc => {
-        console.log("From database", doc);
-        if(doc) {
-            res.status(200).json(doc);
-        } else{
-            res.status(404).json({
-                message: 'No valid entry for Id'
-            });
-        }
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json({
-            error: err
-        });
-    });
-});
-
 //Change a Product's by Id
-router.patch('/:productId', (req, res, next) => {
+router.patch('/:productId', authChecker, (req, res, next) => {
     const id = req.params.productId;
     const updateOps = {};
     for (const ops of req.body){
@@ -148,7 +165,7 @@ router.patch('/:productId', (req, res, next) => {
 });
 
 //Delete by Product by Id
-router.delete('/:productId', (req, res, next) => {
+router.delete('/:productId', authChecker, (req, res, next) => {
     const id = req.params.productId;
     Product.remove({ _id: id})
     .exec()
