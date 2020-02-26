@@ -81,10 +81,9 @@ router.get('/', (req, res, next) =>
 });
 
 //Get by product category
-/*
-router.get('/category', (req, res, next) =>
+router.get('/category', (req, res, next) => 
 {
-    Product.geoSearch(category)
+    Product.find()
     .select('_id title category askingPrice')
     .exec()
     .then(docs => 
@@ -94,7 +93,9 @@ router.get('/category', (req, res, next) =>
             count: docs.length,
             products: docs.map(doc => 
             {
-                return {
+                if (req.body.category === doc.category)
+                {
+                    return {
                     _id: doc._id,
                     title: doc.title,
                     category: doc.category,
@@ -102,13 +103,13 @@ router.get('/category', (req, res, next) =>
                         request: 
                         {
                             type: 'GET',
-                            description: 'GET all information for this item:',
+                            description: 'GET all information for a posted item:',
                             url: 'http://localhost:3000/products/'+doc._id
                         }
+                    }
                 }
             })
         }
-
         if (docs.length >= 0) 
         {
             res.status(200).json(response);
@@ -118,7 +119,7 @@ router.get('/category', (req, res, next) =>
         {
             res.status(200).json(
             {
-                message: 'No Current Entries in '+category+' category'
+                message: 'No Current Entries'
             });
         }
     })
@@ -131,7 +132,6 @@ router.get('/category', (req, res, next) =>
         });
     });
 });
-*/
 
 //Get by product location
 
@@ -184,7 +184,7 @@ router.post('/', authChecker, upload.single('productImage1'), (req, res, next) =
         location: req.body.location,
         productImage1: req.file.path,
         askingPrice: req.body.askingPrice,
-        dateOfPosting: new Date(),
+        dateOfPosting: new Date(new Date().getFullYear(), new Date().getMonth() , new Date().getDate()),
         deliveryType: req.body.deliveryType,
         sellerName: req.body.sellerName,
         sellerContactInfo: req.body.sellerContactInfo
