@@ -1,11 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/user');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+
 const authChecker = require('../auth/auth-checker');
-
-
+const User = require('../models/user');
 
 // User Registration
 router.post('/signup', (req, res, next) => 
@@ -21,6 +20,7 @@ router.post('/signup', (req, res, next) =>
                         message: 'That username is already taken'
                     });
             }
+
             else
             {
                 bcrypt.hash(req.body.userPass, 10, (err, hash) => 
@@ -32,6 +32,7 @@ router.post('/signup', (req, res, next) =>
                             error:err 
                         });
                     }
+
                     else 
                     {
                         const user = new User
@@ -44,6 +45,7 @@ router.post('/signup', (req, res, next) =>
                             userEmail: req.body.userEmail,
                             userPass: hash
                         });
+
                         user.save()
                         .then(result => 
                             {
@@ -81,6 +83,7 @@ router.post("/login", (req, res, next) =>
                 message: "Username not found"
             });
         }
+
         bcrypt.compare(req.body.userPass, user[0].userPass, (err, result) => 
         {
             if (err) 
@@ -90,6 +93,7 @@ router.post("/login", (req, res, next) =>
                     message: "Password Authentication Failed"
                 });
             }
+
             if (result) 
             {
                 const token = jwt.sign(
@@ -108,6 +112,7 @@ router.post("/login", (req, res, next) =>
                     token: token
                 });
             }
+
             res.status(401).json(
             {
                 message: "Incorrect Password"
@@ -129,10 +134,12 @@ router.patch('/:userId', authChecker, (req, res, next) =>
 {
     const id = req.params.userId;
     const updateOps = {};
+
     for (const ops of req.body)
     {
         updateOps[ops.propName] = ops.value;
     }
+
     User.update({ _id: id}, { $set: updateOps })
     .exec()
     .then(res => 

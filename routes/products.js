@@ -1,48 +1,49 @@
 const express = require('express');
 const router = express.Router();
-const Product = require('../models/product');
 const mongoose = require('mongoose');
 const config = require('config');
 const db = config.get('mongoURI');
-const authChecker = require('../auth/auth-checker');
 
 const bodyParser = require('body-parser');
 const multer = require('multer');
- 
 const storage = multer.diskStorage(
     {
         destination: function(req, file, cb)
         {
             cb(null, './uploads');
         },
+
         filename: function(req, file, cb)
         {
             cb(null, /*new Date().toISOString() + */file.originalname);
         }
     }
 );
-//const upload = ({storage: storage});
 const upload = multer({storage: storage});
 
+const Product = require('../models/product');
+const authChecker = require('../auth/auth-checker');
 
-
-//   START
-// Get Information on ALL products
-router.get('/', (req, res, next) => {
+// Get Information on all products
+router.get('/', (req, res, next) => 
+{
     Product.find()
     .select('_id title askingPrice productImage1')
     .exec()
-    .then(docs => {
-        //console.log(docs);
-        const response = {
+    .then(docs => 
+    {
+        const response = 
+        {
             count: docs.length,
-            products: docs.map(doc => {
+            products: docs.map(doc => 
+            {
                 return {
                     _id: doc._id,
                     title: doc.title,
                     askingPrice: doc.askingPrice,
                     productImage1: doc.productImage1,
-                        request: {
+                        request: 
+                        {
                             type: 'GET',
                             description: 'GET all information for a posted item:',
                             url: 'https://localhost:3000/products/'+doc._id
@@ -50,40 +51,58 @@ router.get('/', (req, res, next) => {
                 }
             })
         }
-        if (docs.length >= 0) {
+
+        if (docs.length >= 0) 
+        {
             res.status(200).json(response);
-        } else {
-            res.status(200).json({
+        } 
+
+        else 
+        {
+            res.status(200).json(
+            {
                 message: 'No Current Entries'
             });
         }
     })
-    .catch(err => {
+    .catch(err => 
+    {
         console.log(err);
-        res.status(500).json({
+        res.status(500).json(
+        {
             error: err
         });
     });
 });
 
 //Get by product Id
-router.get('/:productId', (req, res, next) => {
+router.get('/:productId', (req, res, next) => 
+{
     const id = req.params.productId;
+
     Product.findById(id)
     .exec()
-    .then(doc => {
+    .then(doc => 
+    {
         console.log("From database", doc);
-        if(doc) {
+        if(doc) 
+        {
             res.status(200).json(doc);
-        } else{
-            res.status(404).json({
+        } 
+        
+        else
+        {
+            res.status(404).json(
+            {
                 message: 'No valid entry for Id'
             });
         }
     })
-    .catch(err => {
+    .catch(err => 
+    {
         console.log(err);
-        res.status(500).json({
+        res.status(500).json(
+        {
             error: err
         });
     });
@@ -94,8 +113,10 @@ router.get('/:productId', (req, res, next) => {
 // Post Product Information
 router.post('/', authChecker, upload.single('productImage1'), upload.single('productImage2'), 
                  upload.single('productImage3'), upload.single('productImage4'),
-                 (req, res, next) => {
-    const product = new Product({
+                 (req, res, next) => 
+{
+    const product = new Product(
+    {
         _id: new mongoose.Types.ObjectId(),
         title: req.body.title,
         description: req.body.description,
@@ -113,14 +134,18 @@ router.post('/', authChecker, upload.single('productImage1'), upload.single('pro
     });
     product
     .save()
-    .then(result => {
+    .then(result => 
+    {
         console.log(result);
-        res.status(201).json({
+        res.status(201).json(
+        {
             message: "Item Posted",
-            createdProduct: {
+            createdProduct: 
+            {
                 _id: result._id,
                 title: result.title,
-                    request: {
+                    request: 
+                    {
                         type: 'GET',
                         descition: 'View all details of the posted item:',
                         url: 'http://localhost:3000/products/'+result._id
@@ -128,53 +153,69 @@ router.post('/', authChecker, upload.single('productImage1'), upload.single('pro
             }
         });
     })
-    .catch(err => {
+    .catch(err => 
+    {
         console.log(err);
-        res.status(500).json({
+        res.status(500).json(
+        {
             error: err
         });
     });
 });
 
 //Change a Product's by Id
-router.patch('/:productId', authChecker, (req, res, next) => {
+router.patch('/:productId', authChecker, (req, res, next) => 
+{
     const id = req.params.productId;
     const updateOps = {};
-    for (const ops of req.body){
+
+    for (const ops of req.body)
+    {
         updateOps[ops.propName] = ops.value;
     }
+
     Product.update({ _id: id}, { $set: updateOps })
     .exec()
-    .then(res => {
+    .then(res => 
+    {
         console.log(result);
-        res.status(200).json({
+        res.status(200).json(
+        {
             message: 'Product Updated',
-            request: {
+            request: 
+            {
                 type: 'GET',
                 description: 'View all details of the updated item:',
                 url: 'http://localhost:3000/products/'+id
             }
         });
     })
-    .catch(err => {
+    .catch(err => 
+    {
         console.log(err);
-        res.status(500).json({
+        res.status(500).json(
+        {
             error: err
         });
     });
 });
 
 //Delete by Product by Id
-router.delete('/:productId', authChecker, (req, res, next) => {
+router.delete('/:productId', authChecker, (req, res, next) => 
+{
     const id = req.params.productId;
+
     Product.remove({ _id: id})
     .exec()
-    .then(result => {
+    .then(result => 
+    {
         res.status(200).json(result);
     })
-    .catch(err => {
+    .catch(err => 
+    {
         console.log(err);
-        res.status(500).json({
+        res.status(500).json(
+        {
             error: err
         });
     });
