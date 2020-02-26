@@ -134,8 +134,110 @@ router.get('/category', (req, res, next) =>
 });
 
 //Get by product location
+router.get('/location', (req, res, next) => 
+{
+    Product.find()
+    .select('_id title location askingPrice')
+    .exec()
+    .then(docs => 
+    {
+        const response = 
+        {
+            count: docs.length,
+            products: docs.map(doc => 
+            {
+                if (req.body.location === doc.location)
+                {
+                    return {
+                    _id: doc._id,
+                    title: doc.title,
+                    location: doc.location,
+                    askingPrice: doc.askingPrice,
+                        request: 
+                        {
+                            type: 'GET',
+                            description: 'GET all information for a posted item:',
+                            url: 'http://localhost:3000/products/'+doc._id
+                        }
+                    }
+                }
+            })
+        }
+        if (docs.length >= 0) 
+        {
+            res.status(200).json(response);
+        } 
+
+        else 
+        {
+            res.status(200).json(
+            {
+                message: 'No Current Entries'
+            });
+        }
+    })
+    .catch(err => 
+    {
+        console.log(err);
+        res.status(500).json(
+        {
+            error: err
+        });
+    });
+});
 
 //Get by product date
+router.get('/date', (req, res, next) => 
+{
+    Product.find()
+    .select('_id title dateOfPosting askingPrice')
+    .exec()
+    .then(docs => 
+    {
+        const response = 
+        {
+            count: docs.length,
+            products: docs.map(doc => 
+            {
+                if (req.body.dateOfPosting === doc.dateOfPosting)
+                {
+                    return {
+                    _id: doc._id,
+                    title: doc.title,
+                    dateOfPosting: doc.dateOfPosting,
+                    askingPrice: doc.askingPrice,
+                        request: 
+                        {
+                            type: 'GET',
+                            description: 'GET all information for a posted item:',
+                            url: 'http://localhost:3000/products/'+doc._id
+                        }
+                    }
+                }
+            })
+        }
+        if (docs.length >= 0) 
+        {
+            res.status(200).json(response);
+        } 
+
+        else 
+        {
+            res.status(200).json(
+            {
+                message: 'No Current Entries'
+            });
+        }
+    })
+    .catch(err => 
+    {
+        console.log(err);
+        res.status(500).json(
+        {
+            error: err
+        });
+    });
+});
 
 //Get by product Id
 router.get('/:productId', (req, res, next) => 
@@ -184,7 +286,7 @@ router.post('/', authChecker, upload.single('productImage1'), (req, res, next) =
         location: req.body.location,
         productImage1: req.file.path,
         askingPrice: req.body.askingPrice,
-        dateOfPosting: new Date(new Date().getFullYear(), new Date().getMonth() , new Date().getDate()),
+        dateOfPosting: req.body.dateOfPosting,
         deliveryType: req.body.deliveryType,
         sellerName: req.body.sellerName,
         sellerContactInfo: req.body.sellerContactInfo

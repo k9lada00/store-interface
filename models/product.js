@@ -9,7 +9,7 @@ const productSchema = mongoose.Schema({
     location: { type: String, required: false },
     productImage1: { type: String, required: false },
     askingPrice: { type: Number, required: false },
-    dateOfPosting: { type: Date, required: false },
+    dateOfPosting: { type: String, required: false },
     deliveryType: { type: String, required: false },
     sellerName: { type: String, required: false },
     sellerContactInfo: { type: String, required: false }
