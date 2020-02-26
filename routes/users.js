@@ -183,7 +183,7 @@ router.delete('/userId', authChecker, (req, res, next) =>
             });
         }
     
-    bcrypt.compare(req.body.userPass, user[0].userPass, (err, result) => 
+        bcrypt.compare(req.body.userPass, user[0].userPass, (err, result) => 
         {
             if (err) 
             {
