@@ -4,9 +4,10 @@ const mongoose = require('mongoose');
 const config = require('config');
 const db = config.get('mongoURI');
 
+//const moment = require('moment');
 const bodyParser = require('body-parser');
 const multer = require('multer');
-/*
+///*
 const storage = multer.diskStorage(
     {
         destination: function(req, file, cb)
@@ -16,13 +17,13 @@ const storage = multer.diskStorage(
 
         filename: function(req, file, cb)
         {
-            cb(null, new Date().toISOString() + file.originalname);
+            cb(null, file.originalname);
         }
     }
 );
 const upload = multer({storage: storage});
-*/
-const upload = multer({dest: '/uploads'});
+//*/
+//const upload = multer({dest: 'uploads/'});
 
 
 const Product = require('../models/product');
@@ -79,6 +80,63 @@ router.get('/', (req, res, next) =>
     });
 });
 
+//Get by product category
+/*
+router.get('/category', (req, res, next) =>
+{
+    Product.geoSearch(category)
+    .select('_id title category askingPrice')
+    .exec()
+    .then(docs => 
+    {
+        const response = 
+        {
+            count: docs.length,
+            products: docs.map(doc => 
+            {
+                return {
+                    _id: doc._id,
+                    title: doc.title,
+                    category: doc.category,
+                    askingPrice: doc.askingPrice,
+                        request: 
+                        {
+                            type: 'GET',
+                            description: 'GET all information for this item:',
+                            url: 'http://localhost:3000/products/'+doc._id
+                        }
+                }
+            })
+        }
+
+        if (docs.length >= 0) 
+        {
+            res.status(200).json(response);
+        } 
+
+        else 
+        {
+            res.status(200).json(
+            {
+                message: 'No Current Entries in '+category+' category'
+            });
+        }
+    })
+    .catch(err => 
+    {
+        console.log(err);
+        res.status(500).json(
+        {
+            error: err
+        });
+    });
+});
+*/
+
+//Get by product location
+
+//Get by product date
+
 //Get by product Id
 router.get('/:productId', (req, res, next) => 
 {
@@ -125,11 +183,8 @@ router.post('/', authChecker, upload.single('productImage1'), (req, res, next) =
         category: req.body.category,
         location: req.body.location,
         productImage1: req.file.path,
-        productImage2: req.file.path,
-        productImage3: req.file.path,
-        productImage4: req.file.path,
         askingPrice: req.body.askingPrice,
-        dateOfPosting: req.body.dateOfPosting,
+        dateOfPosting: new Date(),
         deliveryType: req.body.deliveryType,
         sellerName: req.body.sellerName,
         sellerContactInfo: req.body.sellerContactInfo
