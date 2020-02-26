@@ -2,9 +2,11 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-
+const jwt = require('jsonwebtoken');
 const authChecker = require('../auth/auth-checker');
+
 const User = require('../models/user');
+const process = require('../config/nodemon');
 
 // User Registration
 router.post('/signup', (req, res, next) => 

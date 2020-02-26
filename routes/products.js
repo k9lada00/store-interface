@@ -6,6 +6,7 @@ const db = config.get('mongoURI');
 
 const bodyParser = require('body-parser');
 const multer = require('multer');
+/*
 const storage = multer.diskStorage(
     {
         destination: function(req, file, cb)
@@ -15,11 +16,14 @@ const storage = multer.diskStorage(
 
         filename: function(req, file, cb)
         {
-            cb(null, /*new Date().toISOString() + */file.originalname);
+            cb(null, new Date().toISOString() + file.originalname);
         }
     }
 );
 const upload = multer({storage: storage});
+*/
+const upload = multer({dest: '/uploads'});
+
 
 const Product = require('../models/product');
 const authChecker = require('../auth/auth-checker');
@@ -46,7 +50,7 @@ router.get('/', (req, res, next) =>
                         {
                             type: 'GET',
                             description: 'GET all information for a posted item:',
-                            url: 'https://localhost:3000/products/'+doc._id
+                            url: 'http://localhost:3000/products/'+doc._id
                         }
                 }
             })
@@ -89,7 +93,7 @@ router.get('/:productId', (req, res, next) =>
         {
             res.status(200).json(doc);
         } 
-        
+
         else
         {
             res.status(404).json(
@@ -111,9 +115,7 @@ router.get('/:productId', (req, res, next) =>
 // START PROTECTED ROUTES
 
 // Post Product Information
-router.post('/', authChecker, upload.single('productImage1'), upload.single('productImage2'), 
-                 upload.single('productImage3'), upload.single('productImage4'),
-                 (req, res, next) => 
+router.post('/', authChecker, upload.single('productImage1'), (req, res, next) => 
 {
     const product = new Product(
     {
@@ -163,7 +165,7 @@ router.post('/', authChecker, upload.single('productImage1'), upload.single('pro
     });
 });
 
-//Change a Product's by Id
+//Change a product by Id
 router.patch('/:productId', authChecker, (req, res, next) => 
 {
     const id = req.params.productId;
@@ -176,7 +178,7 @@ router.patch('/:productId', authChecker, (req, res, next) =>
 
     Product.update({ _id: id}, { $set: updateOps })
     .exec()
-    .then(res => 
+    .then(result => 
     {
         console.log(result);
         res.status(200).json(

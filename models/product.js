@@ -3,14 +3,11 @@ const Schema = mongoose.Schema;
 
 const productSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    title: { type: String, required: true },
+    title: { type: String, required: false },
     description: { type: String, required: false }, 
     category: { type: String, required: false },
     location: { type: String, required: false },
     productImage1: { type: String, required: false },
-    productImage2: { type: String, required: false },
-    productImage3: { type: String, required: false },
-    productImage4: { type: String, required: false },
     askingPrice: { type: Number, required: false },
     dateOfPosting: { type: String, required: false },
     deliveryType: { type: String, required: false },
