@@ -19,8 +19,9 @@ mongoose
     .catch(err => console.log(err)
 );
 
-const productRoutes = require('./routes/products');
+//const searchRoutes = require('./routes/search')
 const userRoutes = require('./routes/users');
+const productRoutes = require('./routes/products');
 
 mongoose.Promise = global.Promise;
 
@@ -46,8 +47,9 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json()); 
 
 //Request Handling Routes
-app.use('/products', productRoutes);
+//app.use('/search', searchRoutes);
 app.use('/users', userRoutes);
+app.use('/products', productRoutes);
 
 //No route was able to handle the request
 app.use((req, res, next) => {
