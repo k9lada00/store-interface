@@ -305,6 +305,7 @@ router.post('/', authChecker, upload.single('productImage1'), (req, res, next) =
 
             if (result) 
             {
+                //Password was correct
                 const product = new Product(
                 {
                     _id: new mongoose.Types.ObjectId(),
@@ -349,6 +350,11 @@ router.post('/', authChecker, upload.single('productImage1'), (req, res, next) =
                     });
                 });
             }
+            //Password was Incorrect
+            res.status(401).json(
+            {
+                message: "Incorrect Password"
+            });
         });
     })
     .catch(err => 
@@ -401,6 +407,7 @@ router.patch('/:productId', authChecker, (req, res, next) =>
 //Delete by Product by Id
 router.delete('/:productId', authChecker, (req, res, next) => 
 {
+    
     User.find({ username: req.body.username })
     .exec()
     .then(user => 
@@ -413,7 +420,8 @@ router.delete('/:productId', authChecker, (req, res, next) =>
             });
         }
     
-    bcrypt.compare(req.body.userPass, user[0].userPass, (err, result) => 
+        // Username and Password required
+        bcrypt.compare(req.body.userPass, user[0].userPass, (err, result) => 
         {
             if (err) 
             {
@@ -425,7 +433,8 @@ router.delete('/:productId', authChecker, (req, res, next) =>
 
             if (result) 
             {    
-    
+                
+                //Username and Password authenticated
                 const id = req.params.productId;
 
                 Product.remove({ _id: id})
@@ -442,9 +451,11 @@ router.delete('/:productId', authChecker, (req, res, next) =>
                         error: err
                     });
                 });
-
-
             }
+            res.status(401).json(
+            {
+                message: "Incorrect Password"
+            });
         });
     })
     .catch(err => 

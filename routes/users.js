@@ -213,6 +213,11 @@ router.delete('/userId', authChecker, (req, res, next) =>
                         });
                     });
             }
+            //Password was incorrect
+            res.status(401).json(
+            {
+                message: "Incorrect Password"
+            });
         });
     })
     .catch(err => 
