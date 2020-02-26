@@ -1,4 +1,3 @@
-//const process = require('jsonwebtoken')
 const process = require('../config/nodemon');
 const jwt = require('jsonwebtoken');
 
