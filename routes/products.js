@@ -7,10 +7,9 @@ const db = config.get('mongoURI');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-//const moment = require('moment');
 const bodyParser = require('body-parser');
 const multer = require('multer');
-///*
+
 const storage = multer.diskStorage(
     {
         destination: function(req, file, cb)
@@ -25,9 +24,6 @@ const storage = multer.diskStorage(
     }
 );
 const upload = multer({storage: storage});
-//*/
-//const upload = multer({dest: 'uploads/'});
-
 
 const User = require('../models/user');
 const Product = require('../models/product');
