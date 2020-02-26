@@ -4,6 +4,9 @@ const mongoose = require('mongoose');
 const config = require('config');
 const db = config.get('mongoURI');
 
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
 //const moment = require('moment');
 const bodyParser = require('body-parser');
 const multer = require('multer');
@@ -26,6 +29,7 @@ const upload = multer({storage: storage});
 //const upload = multer({dest: 'uploads/'});
 
 
+const User = require('../models/user');
 const Product = require('../models/product');
 const authChecker = require('../auth/auth-checker');
 
@@ -277,38 +281,73 @@ router.get('/:productId', (req, res, next) =>
 // Post Product Information
 router.post('/', authChecker, upload.single('productImage1'), (req, res, next) => 
 {
-    const product = new Product(
+    User.find({ username: req.body.username })
+    .exec()
+    .then(user => 
     {
-        _id: new mongoose.Types.ObjectId(),
-        title: req.body.title,
-        description: req.body.description,
-        category: req.body.category,
-        location: req.body.location,
-        productImage1: req.file.path,
-        askingPrice: req.body.askingPrice,
-        dateOfPosting: req.body.dateOfPosting,
-        deliveryType: req.body.deliveryType,
-        sellerName: req.body.sellerName,
-        sellerContactInfo: req.body.sellerContactInfo
-    });
-    product
-    .save()
-    .then(result => 
-    {
-        console.log(result);
-        res.status(201).json(
+        if (user.length < 1) 
         {
-            message: "Item Posted",
-            createdProduct: 
+            return res.status(401).json(
             {
-                _id: result._id,
-                title: result.title,
-                    request: 
+                message: "Username not found"
+            });
+        }
+    
+    bcrypt.compare(req.body.userPass, user[0].userPass, (err, result) => 
+        {
+            if (err) 
+            {
+                return res.status(401).json(
+                {
+                    message: "Password Authentication Failed"
+                });
+            }
+
+            if (result) 
+            {
+                const product = new Product(
+                {
+                    _id: new mongoose.Types.ObjectId(),
+                    title: req.body.title,
+                    description: req.body.description,
+                    category: req.body.category,
+                    location: req.body.location,
+                    productImage1: req.file.path,
+                    askingPrice: req.body.askingPrice,
+                    dateOfPosting: req.body.dateOfPosting,
+                    deliveryType: req.body.deliveryType,
+                    sellerName: req.body.sellerName,
+                    sellerContactInfo: req.body.sellerContactInfo
+                });
+                product
+                .save()
+                .then(result => 
+                {
+                    console.log(result);
+                    res.status(201).json(
                     {
-                        type: 'GET',
-                        descition: 'View all details of the posted item:',
-                        url: 'http://localhost:3000/products/'+result._id
-                    }
+                        message: "Item Posted",
+                        createdProduct: 
+                        {
+                            _id: result._id,
+                            title: result.title,
+                                request: 
+                                {
+                                    type: 'GET',
+                                    descition: 'View all details of the posted item:',
+                                    url: 'http://localhost:3000/products/'+result._id
+                                }
+                        }
+                    });
+                })
+                .catch(err => 
+                {
+                    console.log(err);
+                    res.status(500).json(
+                    {
+                        error: err
+                    });
+                });
             }
         });
     })
@@ -362,13 +401,51 @@ router.patch('/:productId', authChecker, (req, res, next) =>
 //Delete by Product by Id
 router.delete('/:productId', authChecker, (req, res, next) => 
 {
-    const id = req.params.productId;
-
-    Product.remove({ _id: id})
+    User.find({ username: req.body.username })
     .exec()
-    .then(result => 
+    .then(user => 
     {
-        res.status(200).json(result);
+        if (user.length < 1) 
+        {
+            return res.status(401).json(
+            {
+                message: "Username not found"
+            });
+        }
+    
+    bcrypt.compare(req.body.userPass, user[0].userPass, (err, result) => 
+        {
+            if (err) 
+            {
+                return res.status(401).json(
+                {
+                    message: "Password Authentication Failed"
+                });
+            }
+
+            if (result) 
+            {    
+    
+                const id = req.params.productId;
+
+                Product.remove({ _id: id})
+                .exec()
+                .then(result => 
+                {
+                    res.status(200).json(result);
+                })
+                .catch(err => 
+                {
+                    console.log(err);
+                    res.status(500).json(
+                    {
+                        error: err
+                    });
+                });
+
+
+            }
+        });
     })
     .catch(err => 
     {

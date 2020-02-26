@@ -171,23 +171,58 @@ router.patch('/:userId', authChecker, (req, res, next) =>
 // User Delete
 router.delete('/userId', authChecker, (req, res, next) =>
 {
-    User.remove({_id: req.params._id})
+    User.find({ username: req.body.username })
     .exec()
-    .then(result => 
+    .then(user => 
+    {
+        if (user.length < 1) 
         {
-            res.status(200).json
-            ({
-                message: 'User Deleted'
+            return res.status(401).json(
+            {
+                message: "Username not found"
             });
-        })
-    .catch(err => 
+        }
+    
+    bcrypt.compare(req.body.userPass, user[0].userPass, (err, result) => 
         {
-            console.log(err);
-            res.status(500).json
-            ({
-                error:err
-            });
+            if (err) 
+            {
+                return res.status(401).json(
+                {
+                    message: "Password Authentication Failed"
+                });
+            }
+
+            if (result) 
+            {    
+                User.remove({_id: req.params._id})
+                .exec()
+                .then(result => 
+                    {
+                        res.status(200).json
+                        ({
+                            message: 'User Deleted'
+                        });
+                    })
+                .catch(err => 
+                    {
+                        console.log(err);
+                        res.status(500).json
+                        ({
+                            error:err
+                        });
+                    });
+            }
         });
+    })
+    .catch(err => 
+    {
+        console.log(err);
+        res.status(500).json(
+        {
+            error: err
+        });
+    });
 });
 
 module.exports = router; 
