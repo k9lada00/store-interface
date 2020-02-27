@@ -42,7 +42,9 @@ Headers(1): KEY: "Content-Type", VALUE: "application/json"
 Body: "raw", "JSON"
 
 {
+
 	"location": "country name"
+	
 }
 
 Compiles a list of all products in the chosen country. It lists the product's id, title, country, and asking price along with a link to view all details of the product. All other product's not listed in the chosen country will be listed as "null".
