@@ -22,16 +22,14 @@ Compiles all posted information about a specific product. It lists the Product's
 GET /search/category
 
 Headers(1): 
-KEY: "Content-Type", VALUE: "application/json"
 
-Body: 
-"raw", "JSON"
+	KEY: "Content-Type", VALUE: "application/json"
 
-{
+Body: "raw", "JSON"
 
-	"category": "category name"
-	
-}
+	{
+		"category": "category name"
+	}
 
 Compiles a list of all products in the chosen category. It lists the product's id, title, category, and asking price along with a link to view all details of the product. All other product's not listed in the chosen category will be listed as "null".
 
@@ -40,16 +38,14 @@ Compiles a list of all products in the chosen category. It lists the product's i
 GET /search/location
 
 Headers(1): 
-KEY: "Content-Type", VALUE: "application/json"
 
-Body: 
-"raw", "JSON"
+	KEY: "Content-Type", VALUE: "application/json"
 
-{
+Body: "raw", "JSON"
 
-	"location": "country name"
-	
-}
+	{
+		"location": "country name"
+	}
 
 Compiles a list of all products in the chosen country. It lists the product's id, title, country, and asking price along with a link to view all details of the product. All other product's not listed in the chosen country will be listed as "null".
 
@@ -58,16 +54,14 @@ Compiles a list of all products in the chosen country. It lists the product's id
 GET /search/date
 
 Headers(1): 
-KEY: "Content-Type", VALUE: "application/json"
 
-Body: 
-"raw", "JSON"
+	KEY: "Content-Type", VALUE: "application/json"
 
-{
+Body: "raw", "JSON"
 
-	"dateOfPosting": "DD MON YYYY"
-	
-}
+	{
+		"dateOfPosting": "DD MON YYYY"
+	}
 
 Compiles a list of all products in the chosen date of posting. It lists the product's id, title, date of posting, and asking price along with a link to view all details of the product. All other product's not listed in the chosen date of posting will be listed as "null". The date must be listed in the DAY-MONTH-YEAR format (the month must be in all CAPS, with its abbreviated name: JAN, FEB, MAR, etc.). For example: "20 FEB 2020".
 
@@ -76,26 +70,19 @@ Compiles a list of all products in the chosen date of posting. It lists the prod
 POST /users/signup
 
 Headers(1): 
-KEY: "Content-Type", VALUE: "application/json"
 
-Body: 
-"raw", "JSON"
+	KEY: "Content-Type", VALUE: "application/json"
 
-{
+Body: "raw", "JSON"
 
-	"username": "user's username",
-	
-	"firstLastName": "user's first and last name",
-	
-	"dateOfBirth": "DD MON YYYY", 
-	
-	"userCC": "City, Country", 
-	
-	"userEmail": "user-email@email.fi", 
-	
-	"userPass": "user's password"
-	
-}
+	{
+		"username": "user's username",
+		"firstLastName": "user's first and last name",
+		"dateOfBirth": "DD MON YYYY", 
+		"userCC": "City, Country", 
+		"userEmail": "user-email@email.fi", 
+		"userPass": "user's password"
+	}
 
 Registers a new user to the database. The user's information will be returned with the user Id. 
 
@@ -104,18 +91,15 @@ Registers a new user to the database. The user's information will be returned wi
 POST /users/login
 
 Headers(1): 
-KEY: "Content-Type", VALUE: "application/json"
 
-Body: 
-"raw", "JSON"
+	KEY: "Content-Type", VALUE: "application/json"
 
-{
+Body: "raw", "JSON"
 
-	"username": "user's username",
-	
-	"userPass": "user's password"
-	
-}
+	{
+		"username": "user's username",
+		"userPass": "user's password"
+	}
 
 The user will recieve a token that will allow them to navigate the store interface for one hour before expiration.
 
@@ -123,7 +107,10 @@ The user will recieve a token that will allow them to navigate the store interfa
 
 PATCH /users/"User Id"
 
-Headers(2): KEY: "Content-Type", VALUE: "application/json"
+Headers(2): 
+
+	KEY: "Content-Type", VALUE: "application/json"
+	KEY: "Authorization", VALUE: "Bearer 'token'"
 
 
 
