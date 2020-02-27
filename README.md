@@ -21,7 +21,7 @@ Compiles all posted information about a specific product. It lists the Product's
 
 GET /search/category
 
-Headers: KEY: "Content-Type", VALUE: "application/json"
+Headers(1): KEY: "Content-Type", VALUE: "application/json"
 
 Body: "raw", "JSON"
 
@@ -29,22 +29,60 @@ Body: "raw", "JSON"
 	"category": "category name"
 }
 
-Explanation 
+Compiles a list of all products in the chosen category. It lists the product's id, title, category, and asking price along with a link to view all details of the product. All other product's not listed in the chosen category will be listed as "null".
 
 
 
 GET /search/location
 
-Explanation
+Headers(1): KEY: "Content-Type", VALUE: "application/json"
+
+Body: "raw", "JSON"
+
+{
+	"location": "country name"
+}
+
+Compiles a list of all products in the chosen country. It lists the product's id, title, country, and asking price along with a link to view all details of the product. All other product's not listed in the chosen country will be listed as "null".
 
 
 
 GET /search/date
 
-Explanation
+Headers(1): KEY: "Content-Type", VALUE: "application/json"
+
+Body: "raw", "JSON"
+
+{
+
+	"dateOfPosting": "DD MON YYYY"
+	
+}
+
+Compiles a list of all products in the chosen date of posting. It lists the product's id, title, date of posting, and asking price along with a link to view all details of the product. All other product's not listed in the chosen date of posting will be listed as "null". The date must be listed in the DAY-MONTH-YEAR format (the month must be in all CAPS, with its abbreviated name: JAN, FEB, MAR, etc.). For example: "20 FEB 2020".
 
 
 
-POST /users
+POST /users/signup
 
-Explanation
+Headers(1): KEY: "Content-Type", VALUE: "application/json"
+
+Body: "raw", "JSON"
+
+{
+
+	"username": "user's username",
+	
+	"firstLastName": "user's first and last name",
+	
+	"dateOfBirth": "DD MON YYYY", 
+	
+	"userCC": "City, Country", 
+	
+	"userEmail": "user-email@email.fi", 
+	
+	"userPass": "user's password"
+	
+}
+
+Registers a new user to the database. The user's information will be returned with the user Id. 
