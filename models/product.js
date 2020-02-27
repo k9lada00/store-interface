@@ -12,6 +12,7 @@ const productSchema = mongoose.Schema({
     dateOfPosting: { type: String, required: false },
     deliveryType: { type: String, required: false },
     sellerName: { type: String, required: false },
+    username: {type: String, required: false },
     sellerContactInfo: { type: String, required: false }
 
 });

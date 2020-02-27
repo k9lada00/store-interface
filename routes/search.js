@@ -36,7 +36,7 @@ router.get('/', (req, res, next) =>
                             url: 'http://localhost:3000/products/'+doc._id
                         }
                 }
-            })
+            }),
         }
 
         if (docs.length >= 0) 
