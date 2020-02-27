@@ -57,7 +57,11 @@ router.post('/signup', (req, res, next) =>
                         console.log(result);
                         res.status(201).json(
                         {
-                            message: 'User Created'
+                            message: 'User Created',
+                            createdUser: 
+                            {
+                                _id: result._id,
+                            }
                             //Authentication process successful; username and password correct
                         });
                     })
@@ -75,6 +79,8 @@ router.post('/signup', (req, res, next) =>
         }
     })
 });
+
+// Start protected routes
 
 // User Login
 router.post("/login", (req, res, next) => 
@@ -124,11 +130,14 @@ router.post("/login", (req, res, next) =>
                 });
             }
 
-            res.status(401).json(
+            else
             {
-                message: "Incorrect Password"
-                //Authentication process successful; password was incorrect
-            });
+                res.status(401).json(
+                {
+                    message: "Incorrect Password"
+                    //Authentication process successful; password was incorrect
+                });
+            }
         });
     })
     .catch(err => 
@@ -180,10 +189,11 @@ router.patch('/:userId', authChecker, (req, res, next) =>
 });
 
 // User Delete
-router.delete('/userId', authChecker, (req, res, next) =>
-{
-    //Username and Password Authentication
+router.delete('/:userId', authChecker, (req, res, next) =>
+{   
+    const id = req.params.userId;
 
+    //Username and Password Authentication
     User.find({ username: req.body.username })
     .exec()
     .then(user => 
@@ -196,46 +206,53 @@ router.delete('/userId', authChecker, (req, res, next) =>
                 //Username database successfully searched; username not found
             });
         }
-    
-        bcrypt.compare(req.body.userPass, user[0].userPass, (err, result) => 
-        {
-            if (err) 
-            {
-                return res.status(401).json(
-                {
-                    message: "Password Authentication Failed"
-                    //Authentication process unsuccessful; JWT Authentication failed to compare the passwords
-                });
-            }
 
-            if (result) 
-            {    
-                User.remove({_id: req.params._id})
-                .exec()
-                .then(result => 
+        else
+        {
+            bcrypt.compare(req.body.userPass, user[0].userPass, (err, result) => 
+            {
+                if (err) 
+                {
+                    return res.status(401).json(
                     {
-                        res.status(200).json
-                        ({
+                        message: "Password Authentication Failed"
+                        //Authentication process unsuccessful; JWT Authentication failed to compare the passwords
+                    });
+                }
+
+                if (result) 
+                {    
+                    User.remove({_id: req.params._id})
+                    .exec()
+                    .then(result => 
+                    {
+                        res.status(200).json(
+                        {
                             message: 'User Deleted'
                             //Authentication process successful; username and password correct
                         });
                     })
-                .catch(err => 
+                    .catch(err => 
                     {
                         console.log(err);
-                        res.status(500).json
-                        ({
+                        res.status(500).json(
+                        {
                             error:err
                             //Error: unable to delete the user from the database
                         });
+                    });    
+                }
+
+                else 
+                {
+                    res.status(401).json(
+                    {
+                        message: "Incorrect Password"
+                        //Authentication process successful; password was incorrect
                     });
-            }
-            res.status(401).json(
-            {
-                message: "Incorrect Password"
-                //Authentication process successful; password was incorrect
+                }
             });
-        });
+        }
     })
     .catch(err => 
     {
