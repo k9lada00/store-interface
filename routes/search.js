@@ -33,7 +33,7 @@ router.get('/', (req, res, next) =>
                         {
                             type: 'GET',
                             description: 'GET all information for a posted item:',
-                            url: 'http://localhost:3000/products/'+doc._id
+                            url: 'http://localhost:3000/search/'+doc._id
                         }
                 }
             }),
