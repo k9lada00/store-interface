@@ -132,5 +132,4 @@ DELETE /users/"User Id"
 Headers(2): 
 
 	KEY: "Content-Type", VALUE: "application/json" 
-
 	KEY: "Authorization", VALUE: "Bearer 'token'"
