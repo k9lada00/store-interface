@@ -111,6 +111,14 @@ Headers(2):
 
 	KEY: "Content-Type", VALUE: "application/json"
 	KEY: "Authorization", VALUE: "Bearer 'token'"
+	
+Body: "raw", "JSON"
+
+	[
+		{"propName": "detail to change", "value": "new/updated information"}
+	]
+
+The user's token, username, and password will be authenticated. Upon proper authentication, the chosen detail will be updated with the new information. 
 
 
 
@@ -120,3 +128,12 @@ Headers(2):
 
 	KEY: "Content-Type", VALUE: "application/json" 
 	KEY: "Authorization", VALUE: "Bearer 'token'"
+
+Body: "raw", "JSON"
+
+	{
+		"username": "user's username",
+		"userPass": "user's password"
+	}
+
+The user's token, username, and password will be authenticated. Upon proper authentication, the user will be deleted. 
