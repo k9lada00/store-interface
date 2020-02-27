@@ -26,7 +26,9 @@ Headers(1): KEY: "Content-Type", VALUE: "application/json"
 Body: "raw", "JSON"
 
 {
+
 	"category": "category name"
+	
 }
 
 Compiles a list of all products in the chosen category. It lists the product's id, title, category, and asking price along with a link to view all details of the product. All other product's not listed in the chosen category will be listed as "null".
