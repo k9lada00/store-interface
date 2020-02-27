@@ -28,6 +28,7 @@ const upload = multer({storage: storage});
 const User = require('../models/user');
 const Product = require('../models/product');
 const authChecker = require('../auth/auth-checker');
+const process = require('../config/nodemon');
 
 // START PROTECTED ROUTES
 
@@ -48,73 +49,79 @@ router.post('/', authChecker, upload.single('productImage1'), (req, res, next) =
                 //Username database successfully searched; username not found
             });
         }
-    
-    bcrypt.compare(req.body.userPass, user[0].userPass, (err, result) => 
-        {
-            if (err) 
-            {
-                return res.status(401).json(
-                {
-                    message: "Password Authentication Failed"
-                    //The JWT Authentication failed to compare the passwords
-                });
-            }
 
-            if (result) 
+        else
+        {
+            bcrypt.compare(req.body.userPass, user[0].userPass, (err, result) => 
             {
-                const product = new Product(
+                if (err) 
                 {
-                    _id: new mongoose.Types.ObjectId(),
-                    title: req.body.title,
-                    description: req.body.description,
-                    category: req.body.category,
-                    location: req.body.location,
-                    productImage1: req.file.path,
-                    askingPrice: req.body.askingPrice,
-                    dateOfPosting: req.body.dateOfPosting,
-                    deliveryType: req.body.deliveryType,
-                    sellerName: req.body.sellerName,
-                    sellerContactInfo: req.body.sellerContactInfo
-                });
-                product
-                .save()
-                .then(result => 
-                {
-                    console.log(result);
-                    res.status(201).json(
+                    return res.status(401).json(
                     {
-                        message: "Item Posted",
-                        createdProduct: 
+                        message: "Password Authentication Failed"
+                        //The JWT Authentication failed to compare the passwords
+                    }); 
+                }
+
+                if (result) 
+                {
+                    const product = new Product(
+                    {
+                        _id: new mongoose.Types.ObjectId(),
+                        title: req.body.title,
+                        description: req.body.description,
+                        category: req.body.category,
+                        location: req.body.location,
+                        productImage1: req.file.path,
+                        askingPrice: req.body.askingPrice,
+                        dateOfPosting: req.body.dateOfPosting,
+                        deliveryType: req.body.deliveryType,
+                        sellerName: req.body.sellerName,
+                        username: req.body.username,
+                        sellerContactInfo: req.body.sellerContactInfo
+                    });
+                    product
+                    .save()
+                    .then(result => 
+                    {
+                        console.log(result);
+                        res.status(201).json(
                         {
-                            _id: result._id,
-                            title: result.title,
-                                request: 
-                                {
-                                    type: 'GET',
-                                    descition: 'View all details of the posted item:',
-                                    url: 'http://localhost:3000/products/'+result._id
-                                }
-                        }
-                        //Authentication process successful; username and password correct
-                    });
-                })
-                .catch(err => 
-                {
-                    console.log(err);
-                    res.status(500).json(
+                            message: "Item Posted",
+                            createdProduct: 
+                            {
+                                _id: result._id,
+                                title: result.title,
+                                    request: 
+                                    {
+                                        type: 'GET',
+                                        descition: 'View all details of the posted item:',
+                                        url: 'http://localhost:3000/search/'+result._id
+                                    }
+                            }
+                            //Authentication process successful; username and password correct
+                        });
+                    })
+                    .catch(err => 
                     {
-                        error: err
-                        //Error: unable to post the product to the database
+                        console.log(err);
+                        res.status(500).json(
+                        {
+                            error: err
+                            //Error: unable to post the product to the database
+                        });
                     });
-                });
-            }
-            
-            res.status(401).json(
-            {
-                message: "Incorrect Password"
-                //Authentication process successful; password was incorrect
+                }
+                else
+                {
+                    res.status(401).json(
+                    {
+                        message: "Incorrect Password"
+                        //Authentication process successful; password was incorrect
+                    });
+                }
             });
-        });
+        }
     })
     .catch(err => 
     {
@@ -150,7 +157,7 @@ router.patch('/:productId', authChecker, (req, res, next) =>
             {
                 type: 'GET',
                 description: 'View all details of the updated item:',
-                url: 'http://localhost:3000/products/'+id
+                url: 'http://localhost:3000/search/'+id
             }
         });
     })
@@ -164,11 +171,11 @@ router.patch('/:productId', authChecker, (req, res, next) =>
     });
 });
 
-//Delete by Product by Id
 router.delete('/:productId', authChecker, (req, res, next) => 
 {
+    const id = req.params.productId;
+
     //Username and Password Authentication
-    
     User.find({ username: req.body.username })
     .exec()
     .then(user => 
@@ -181,45 +188,53 @@ router.delete('/:productId', authChecker, (req, res, next) =>
                 //Username database successfully searched; username not found
             });
         }
-    
-        bcrypt.compare(req.body.userPass, user[0].userPass, (err, result) => 
+
+        else
         {
-            if (err) 
-            {
-                return res.status(401).json(
+            bcrypt.compare(req.body.userPass, user[0].userPass, (err, result) => 
+            {        
+                if (err) 
                 {
-                    message: "Password Authentication Failed"
-                    //Authentication process unsuccessful; JWT Authentication failed to compare the passwords
-                });
-            }
-
-            if (result) 
-            {    
-                const id = req.params.productId;
-
-                Product.remove({ _id: id})
-                .exec()
-                .then(result => 
-                {
-                    res.status(200).json(result);
-                    //Authentication process successful; username and password correct
-                })
-                .catch(err => 
-                {
-                    console.log(err);
-                    res.status(500).json(
+                    return res.status(401).json(
                     {
-                        error: err
-                        //Error: unable to delete the product from the database
+                       message: "Password Authentication Failed"
+                        //Authentication process unsuccessful; JWT Authentication failed to compare the passwords
                     });
-                });
-            }
-            res.status(401).json(
-            {
-                message: "Incorrect Password"
-                //Authentication process successful; password was incorrect
+                }    
+
+                if(result)
+                {
+                    Product.remove({ _id: id})
+                    .exec()
+                    .then(result => 
+                    {
+                        res.status(200).json(
+                        {
+                            message: 'Product Deleted'
+                        });
+                        //Authentication process successful; username and password correct
+                    })
+                    .catch(err => 
+                    {
+                        console.log(err);
+                        res.status(500).json(
+                        {
+                            error: err
+                            //Error: unable to delete the product from the database
+                        });
+                    });
+                }
+
+                else 
+                {
+                    res.status(401).json(
+                    {
+                        message: 'Incorrect Password'
+                        //Authentication process successful; password was incorrect
+                    });
+                }
             });
-        });
+        }
     })
     .catch(err => 
     {
