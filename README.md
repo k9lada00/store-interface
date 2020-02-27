@@ -21,9 +21,11 @@ Compiles all posted information about a specific product. It lists the Product's
 
 GET /search/category
 
-Headers(1): KEY: "Content-Type", VALUE: "application/json"
+Headers(1): 
+KEY: "Content-Type", VALUE: "application/json"
 
-Body: "raw", "JSON"
+Body: 
+"raw", "JSON"
 
 {
 
@@ -37,9 +39,11 @@ Compiles a list of all products in the chosen category. It lists the product's i
 
 GET /search/location
 
-Headers(1): KEY: "Content-Type", VALUE: "application/json"
+Headers(1): 
+KEY: "Content-Type", VALUE: "application/json"
 
-Body: "raw", "JSON"
+Body: 
+"raw", "JSON"
 
 {
 
@@ -53,9 +57,11 @@ Compiles a list of all products in the chosen country. It lists the product's id
 
 GET /search/date
 
-Headers(1): KEY: "Content-Type", VALUE: "application/json"
+Headers(1): 
+KEY: "Content-Type", VALUE: "application/json"
 
-Body: "raw", "JSON"
+Body: 
+"raw", "JSON"
 
 {
 
@@ -69,9 +75,11 @@ Compiles a list of all products in the chosen date of posting. It lists the prod
 
 POST /users/signup
 
-Headers(1): KEY: "Content-Type", VALUE: "application/json"
+Headers(1): 
+KEY: "Content-Type", VALUE: "application/json"
 
-Body: "raw", "JSON"
+Body: 
+"raw", "JSON"
 
 {
 
@@ -95,9 +103,11 @@ Registers a new user to the database. The user's information will be returned wi
 
 POST /users/login
 
-Headers(1): KEY: "Content-Type", VALUE: "application/json"
+Headers(1): 
+KEY: "Content-Type", VALUE: "application/json"
 
-Body: "raw", "JSON"
+Body: 
+"raw", "JSON"
 
 {
 
@@ -120,8 +130,6 @@ Headers(2): KEY: "Content-Type", VALUE: "application/json"
 DELETE /users/"User Id"
 
 Headers(2): 
-
-KEY: "Content-Type", VALUE: "application/json"
-
+KEY: "Content-Type", VALUE: "application/json" 
 KEY: "Authorization", VALUE: "Bearer 'token'"
 
