@@ -19,7 +19,7 @@ mongoose
     .catch(err => console.log(err)
 );
 
-//const searchRoutes = require('./routes/search')
+const searchRoutes = require('./routes/search')
 const userRoutes = require('./routes/users');
 const productRoutes = require('./routes/products');
 
@@ -47,7 +47,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json()); 
 
 //Request Handling Routes
-//app.use('/search', searchRoutes);
+app.use('/search', searchRoutes);
 app.use('/users', userRoutes);
 app.use('/products', productRoutes);
 
