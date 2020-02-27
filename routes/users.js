@@ -76,6 +76,8 @@ router.post('/signup', (req, res, next) =>
     })
 });
 
+// Start protected routes
+
 // User Login
 router.post("/login", (req, res, next) => 
 {
@@ -124,11 +126,14 @@ router.post("/login", (req, res, next) =>
                 });
             }
 
-            res.status(401).json(
+            else
             {
-                message: "Incorrect Password"
-                //Authentication process successful; password was incorrect
-            });
+                res.status(401).json(
+                {
+                    message: "Incorrect Password"
+                    //Authentication process successful; password was incorrect
+                });
+            }
         });
     })
     .catch(err => 
@@ -210,31 +215,67 @@ router.delete('/userId', authChecker, (req, res, next) =>
 
             if (result) 
             {    
-                User.remove({_id: req.params._id})
+                const id = req.params.productId;
+
+                //Username and Password Authenticated; now checking for username of the individual product
+
+                User.findById(id)
+                .select('username')
                 .exec()
-                .then(result => 
+                .then( docs =>
+                {
+                    if (req.body.username === doc.username)
                     {
-                        res.status(200).json
-                        ({
-                            message: 'User Deleted'
-                            //Authentication process successful; username and password correct
+                        //then allow the process to continue
+                            User.remove({_id: req.params._id})
+                            .exec()
+                            .then(result => 
+                            {
+                                res.status(200).json(
+                                    {
+                                        message: 'User Deleted'
+                                        //Authentication process successful; username and password correct
+                                    });
+                            })
+                            .catch(err => 
+                            {
+                                console.log(err);
+                                res.status(500).json
+                                ({
+                                    error:err
+                                    //Error: unable to delete the user from the database
+                                });
+                            });    
+                    }
+
+                    else
+                    {
+                        res.status(401).json(
+                        {
+                            message: "Incorrect Password"
+                            //Authentication process successful; password was incorrect
                         });
-                    })
+                    }
+                })
                 .catch(err => 
+                {
+                    console.log(err);
+                    res.status(500).json(
                     {
-                        console.log(err);
-                        res.status(500).json
-                        ({
-                            error:err
-                            //Error: unable to delete the user from the database
-                        });
+                        error: err
+                        //Error: unable to find user Id in the database
                     });
+                });
             }
-            res.status(401).json(
+
+            else 
             {
-                message: "Incorrect Password"
-                //Authentication process successful; password was incorrect
-            });
+                res.status(401).json(
+                {
+                    message: "Incorrect Password"
+                    //Authentication process successful; password was incorrect
+                });
+            }
         });
     })
     .catch(err => 

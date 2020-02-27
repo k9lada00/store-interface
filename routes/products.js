@@ -28,6 +28,7 @@ const upload = multer({storage: storage});
 const User = require('../models/user');
 const Product = require('../models/product');
 const authChecker = require('../auth/auth-checker');
+const process = require('../config/nodemon');
 
 // START PROTECTED ROUTES
 
@@ -57,7 +58,7 @@ router.post('/', authChecker, upload.single('productImage1'), (req, res, next) =
                 {
                     message: "Password Authentication Failed"
                     //The JWT Authentication failed to compare the passwords
-                });
+                }); 
             }
 
             if (result) 
@@ -74,6 +75,7 @@ router.post('/', authChecker, upload.single('productImage1'), (req, res, next) =
                     dateOfPosting: req.body.dateOfPosting,
                     deliveryType: req.body.deliveryType,
                     sellerName: req.body.sellerName,
+                    username: req.body.username,
                     sellerContactInfo: req.body.sellerContactInfo
                 });
                 product
@@ -92,7 +94,7 @@ router.post('/', authChecker, upload.single('productImage1'), (req, res, next) =
                                 {
                                     type: 'GET',
                                     descition: 'View all details of the posted item:',
-                                    url: 'http://localhost:3000/products/'+result._id
+                                    url: 'http://localhost:3000/search/'+result._id
                                 }
                         }
                         //Authentication process successful; username and password correct
@@ -108,12 +110,14 @@ router.post('/', authChecker, upload.single('productImage1'), (req, res, next) =
                     });
                 });
             }
-            
-            res.status(401).json(
+            else
             {
-                message: "Incorrect Password"
-                //Authentication process successful; password was incorrect
-            });
+                res.status(401).json(
+                {
+                    message: "Incorrect Password"
+                    //Authentication process successful; password was incorrect
+                });
+            }
         });
     })
     .catch(err => 
@@ -150,7 +154,7 @@ router.patch('/:productId', authChecker, (req, res, next) =>
             {
                 type: 'GET',
                 description: 'View all details of the updated item:',
-                url: 'http://localhost:3000/products/'+id
+                url: 'http://localhost:3000/search/'+id
             }
         });
     })
@@ -197,12 +201,42 @@ router.delete('/:productId', authChecker, (req, res, next) =>
             {    
                 const id = req.params.productId;
 
-                Product.remove({ _id: id})
+                //Username and Password Authenticated; now checking for username of the individual product
+
+                Product.findById(id)
+                .select('username')
                 .exec()
-                .then(result => 
+                .then( docs =>
                 {
-                    res.status(200).json(result);
-                    //Authentication process successful; username and password correct
+                    if (req.body.username === doc.username)
+                    {
+                        //then allow the process to continue
+                        Product.remove({ _id: id})
+                        .exec()
+                        .then(result => 
+                        {
+                            res.status(200).json(result);
+                            //Authentication process successful; username and password correct
+                        })
+                        .catch(err => 
+                        {
+                            console.log(err);
+                            res.status(500).json(
+                            {
+                                error: err
+                                //Error: unable to delete the product from the database
+                            });
+                        });
+                    }
+
+                    else 
+                    {
+                        res.status(401).json(
+                        {
+                            message: 'Incorrect Password'
+                            //Username and Password Authenticated; current user is not a match for the original poster
+                        });
+                    }
                 })
                 .catch(err => 
                 {
@@ -210,15 +244,19 @@ router.delete('/:productId', authChecker, (req, res, next) =>
                     res.status(500).json(
                     {
                         error: err
-                        //Error: unable to delete the product from the database
+                        //Error: unable to find product Id in the database
                     });
                 });
             }
-            res.status(401).json(
+
+            else 
             {
-                message: "Incorrect Password"
-                //Authentication process successful; password was incorrect
-            });
+                res.status(401).json(
+                {
+                    message: "Incorrect Password"
+                    //Authentication process successful; password was incorrect
+                });
+            }
         });
     })
     .catch(err => 
