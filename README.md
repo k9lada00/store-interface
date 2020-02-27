@@ -90,3 +90,38 @@ Body: "raw", "JSON"
 }
 
 Registers a new user to the database. The user's information will be returned with the user Id. 
+
+
+
+POST /users/login
+
+Headers(1): KEY: "Content-Type", VALUE: "application/json"
+
+Body: "raw", "JSON"
+
+{
+
+	"username": "user's username",
+	
+	"userPass": "user's password"
+	
+}
+
+The user will recieve a token that will allow them to navigate the store interface for one hour before expiration.
+
+
+
+PATCH /users/"User Id"
+
+Headers(2): KEY: "Content-Type", VALUE: "application/json"
+
+
+
+DELETE /users/"User Id"
+
+Headers(2): 
+
+KEY: "Content-Type", VALUE: "application/json"
+
+KEY: "Authorization", VALUE: "Bearer 'token'"
+
