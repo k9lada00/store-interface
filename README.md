@@ -114,7 +114,6 @@ POST /products
 
 Headers(1):
 
-	KEY: "Content-Type", VALUE: "application/json" 
 	KEY: "Authorization", VALUE: "Bearer 'token'"
 
 Body: "form-data"
@@ -152,16 +151,8 @@ The user's token, username, and password will be authenticated. Upon proper auth
 
 DELETE /products/"User Id"
 
-Headers(2): 
+Headers(1): 
 
-	KEY: "Content-Type", VALUE: "application/json" 
 	KEY: "Authorization", VALUE: "Bearer 'token'"
 
-Body: "raw", "JSON"
-
-	{
-		"username": "user's username",
-		"userPass": "user's password"
-	}
-
-The user's token, username, and password will be authenticated. Upon proper authentication, the product will be deleted. 
+The user's token will be authenticated. Upon proper authentication, the product will be deleted. 
