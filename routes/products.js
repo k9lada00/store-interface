@@ -45,7 +45,6 @@ router.post('/', authChecker, upload.single('productImage1'), (req, res, next) =
         dateOfPosting: req.body.dateOfPosting,
         deliveryType: req.body.deliveryType,
         sellerName: req.body.sellerName,
-        username: req.body.username,
         sellerContactInfo: req.body.sellerContactInfo
     });
 
