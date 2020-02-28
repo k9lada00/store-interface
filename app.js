@@ -19,6 +19,7 @@ mongoose
     .catch(err => console.log(err)
 );
 
+//Established Routes
 const searchRoutes = require('./routes/search')
 const userRoutes = require('./routes/users');
 const productRoutes = require('./routes/products');
