@@ -12,7 +12,7 @@ const authChecker = require('../auth/auth-checker');
 
 //SEARCH
 // Get Information on all products
-router.get('/', (req, res, next) => 
+router.get('/all', (req, res, next) => 
 {
     Product.find()
     .select('_id title askingPrice productImage1')
@@ -63,7 +63,7 @@ router.get('/', (req, res, next) =>
 });
 
 //Get by product category
-router.get('/:category', (req, res, next) => 
+router.get('/category/:category', (req, res, next) => 
 {
     const cat = req.params.category;
     
@@ -118,7 +118,7 @@ router.get('/:category', (req, res, next) =>
 });
 
 //Get by product location
-router.get('/:location', (req, res, next) => 
+router.get('/location/:location', (req, res, next) => 
 {
     const loc = req.params.location;
 
@@ -173,7 +173,7 @@ router.get('/:location', (req, res, next) =>
 });
 
 //Get by product date
-router.get('/:dateOfPosting', (req, res, next) => 
+router.get('/date/:dateOfPosting', (req, res, next) => 
 {
     const dat = req.params.dateOfPosting;
 
@@ -228,7 +228,7 @@ router.get('/:dateOfPosting', (req, res, next) =>
 });
 
 //Get by product Id
-router.get('/:productId', (req, res, next) => 
+router.get('product/:productId', (req, res, next) => 
 {
     const id = req.params.productId;
 
