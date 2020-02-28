@@ -12,7 +12,7 @@ const authChecker = require('../auth/auth-checker');
 
 //SEARCH
 // Get Information on all products
-router.get('/', (req, res, next) => 
+router.get('/all', (req, res, next) => 
 {
     Product.find()
     .select('_id title askingPrice productImage1')
@@ -63,8 +63,10 @@ router.get('/', (req, res, next) =>
 });
 
 //Get by product category
-router.get('/category', (req, res, next) => 
+router.get('category/:category', (req, res, next) => 
 {
+    const cat = req.params.category;
+    
     Product.find()
     .select('_id title category askingPrice')
     .exec()
@@ -72,10 +74,10 @@ router.get('/category', (req, res, next) =>
     {
         const response = 
         {
-            count: docs.length,
+            message: 'Try searching the following categories: electronics, clothing, kitchen, home...',
             products: docs.map(doc => 
             {
-                if (req.body.category === doc.category)
+                if (req.params.category === doc.category)
                 {
                     return {
                     _id: doc._id,
@@ -101,7 +103,7 @@ router.get('/category', (req, res, next) =>
         {
             res.status(200).json(
             {
-                message: 'No Current Entries'
+                message: 'No Current Entries',
             });
         }
     })
@@ -116,8 +118,10 @@ router.get('/category', (req, res, next) =>
 });
 
 //Get by product location
-router.get('/location', (req, res, next) => 
+router.get('location/:location', (req, res, next) => 
 {
+    const loc = req.params.location;
+
     Product.find()
     .select('_id title location askingPrice')
     .exec()
@@ -125,10 +129,10 @@ router.get('/location', (req, res, next) =>
     {
         const response = 
         {
-            count: docs.length,
+            message: 'Try searching by country name with correct capitalization: Finland, Sweden, Russia, Norway, Estonia, etc.',
             products: docs.map(doc => 
             {
-                if (req.body.location === doc.location)
+                if (req.params.location === doc.location)
                 {
                     return {
                     _id: doc._id,
@@ -169,8 +173,10 @@ router.get('/location', (req, res, next) =>
 });
 
 //Get by product date
-router.get('/date', (req, res, next) => 
+router.get('date/:dateOfPosting', (req, res, next) => 
 {
+    const dat = req.params.dateOfPosting;
+
     Product.find()
     .select('_id title dateOfPosting askingPrice')
     .exec()
@@ -178,10 +184,10 @@ router.get('/date', (req, res, next) =>
     {
         const response = 
         {
-            count: docs.length,
+            message: 'Try searching dates in DD-Mon-YYYY format with abbrieviated month titles (uppercase) and spaces. Example: 15 FEB 2020',
             products: docs.map(doc => 
             {
-                if (req.body.dateOfPosting === doc.dateOfPosting)
+                if (req.params.dateOfPosting === doc.dateOfPosting)
                 {
                     return {
                     _id: doc._id,
@@ -222,7 +228,7 @@ router.get('/date', (req, res, next) =>
 });
 
 //Get by product Id
-router.get('/:productId', (req, res, next) => 
+router.get('product/:productId', (req, res, next) => 
 {
     const id = req.params.productId;
 
