@@ -193,76 +193,25 @@ router.delete('/:userId', authChecker, (req, res, next) =>
 {   
     const id = req.params.userId;
 
-    //Username and Password Authentication
-    User.find({ username: req.body.username })
+    User.remove({_id: req.params._id})
     .exec()
-    .then(user => 
+    .then(result => 
     {
-        if (user.length < 1) 
+        res.status(200).json(
         {
-            return res.status(401).json(
-            {
-                message: "Username not found"
-                //Username database successfully searched; username not found
-            });
-        }
-
-        else
-        {
-            bcrypt.compare(req.body.userPass, user[0].userPass, (err, result) => 
-            {
-                if (err) 
-                {
-                    return res.status(401).json(
-                    {
-                        message: "Password Authentication Failed"
-                        //Authentication process unsuccessful; JWT Authentication failed to compare the passwords
-                    });
-                }
-
-                if (result) 
-                {    
-                    User.remove({_id: req.params._id})
-                    .exec()
-                    .then(result => 
-                    {
-                        res.status(200).json(
-                        {
-                            message: 'User Deleted'
-                            //Authentication process successful; username and password correct
-                        });
-                    })
-                    .catch(err => 
-                    {
-                        console.log(err);
-                        res.status(500).json(
-                        {
-                            error:err
-                            //Error: unable to delete the user from the database
-                        });
-                    });    
-                }
-
-                else 
-                {
-                    res.status(401).json(
-                    {
-                        message: "Incorrect Password"
-                        //Authentication process successful; password was incorrect
-                    });
-                }
-            });
-        }
+            message: 'User Deleted'
+            //Authentication process successful; username and password correct
+        });
     })
     .catch(err => 
     {
         console.log(err);
         res.status(500).json(
         {
-            error: err
-            //Authentication process unsuccessful; unable to search database for username
+            error:err
+            //Error: unable to delete the user from the database
         });
-    });
+    });    
 });
 
 module.exports = router; 
