@@ -13,25 +13,25 @@ Compiles a list of all products and displays their id, title, and asking price a
 
 
 
-GET /search/"Product Id"
+GET /search/product/"Product Id"
 
 Compiles all posted information about a specific product. It lists the Product's id, title, description, category, location, images, asking price, sate of posting, delivery type, the seller's name, and the seller's contact info.
 
 
 
-GET /search/"category"
+GET /search/category/"category"
 
 Compiles a list of all products in the chosen category. It lists the product's id, title, category, and asking price along with a link to view all details of the product. All other product's not listed in the chosen category will be listed as "null".
 
 
 
-GET /search/"location"
+GET /search/location/"location"
 
 Compiles a list of all products in the chosen country. It lists the product's id, title, country, and asking price along with a link to view all details of the product. All other product's not listed in the chosen country will be listed as "null".
 
 
 
-GET /search/"date"
+GET /search/date/"date"
 
 Compiles a list of all products in the chosen date of posting. It lists the product's id, title, date of posting, and asking price along with a link to view all details of the product. All other product's not listed in the chosen date of posting will be listed as "null". The date must be listed in the DAY-MONTH-YEAR format (the month must be in all CAPS, with its abbreviated name: JAN, FEB, MAR, etc.). For example: "20 FEB 2020".
 
