@@ -149,7 +149,7 @@ The user's token, username, and password will be authenticated. Upon proper auth
 
 
 
-DELETE /products/"User Id"
+DELETE /products/"Product Id"
 
 Headers(1): 
 
