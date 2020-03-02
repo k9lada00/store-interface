@@ -1,12 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const config = require('config');
+const db = config.get('mongoURI');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const authChecker = require('../auth/auth-checker');
+const bodyParser = require('body-parser');
 
 //API routes
 const User = require('../models/user');
+const Product = require('../models/product');
+const authChecker = require('../auth/auth-checker');
 const process = require('../config/nodemon');
 
 // User Registration
@@ -152,7 +156,7 @@ router.post("/login", (req, res, next) =>
 });
 
 // Change a User by Id
-router.patch('/:userId', authChecker, (req, res, next) => 
+router.patch('/update/:userId', authChecker, (req, res, next) => 
 {
     const id = req.params.userId;
     const updateOps = {};
@@ -164,7 +168,7 @@ router.patch('/:userId', authChecker, (req, res, next) =>
 
     User.update({ _id: id}, { $set: updateOps })
     .exec()
-    .then(res => 
+    .then(result => 
     {
         console.log(result);
         res.status(200).json(
