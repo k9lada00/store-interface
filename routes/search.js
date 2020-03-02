@@ -33,7 +33,7 @@ router.get('/all', (req, res, next) =>
                         {
                             type: 'GET',
                             description: 'GET all information for a posted item:',
-                            url: 'http://localhost:3000/search/'+doc._id
+                            url: 'http://localhost:3000/search/product/'+doc._id
                         }
                 }
             }),
@@ -88,7 +88,7 @@ router.get('/category/:category', (req, res, next) =>
                         {
                             type: 'GET',
                             description: 'GET all information for a posted item:',
-                            url: 'http://localhost:3000/search/'+doc._id
+                            url: 'http://localhost:3000/search/product/'+doc._id
                         }
                     }
                 }
@@ -143,7 +143,7 @@ router.get('/location/:location', (req, res, next) =>
                         {
                             type: 'GET',
                             description: 'GET all information for a posted item:',
-                            url: 'http://localhost:3000/search/'+doc._id
+                            url: 'http://localhost:3000/search/product/'+doc._id
                         }
                     }
                 }
@@ -184,7 +184,7 @@ router.get('/date/:dateOfPosting', (req, res, next) =>
     {
         const response = 
         {
-            message: 'Try searching dates in DD-Mon-YYYY format with abbrieviated month titles (uppercase) and spaces. Example: 15 FEB 2020',
+            message: 'Try searching dates in DD-Mon-YYYY format with abbreviated month titles (uppercase) and spaces. Example: 15 FEB 2020',
             products: docs.map(doc => 
             {
                 if (req.params.dateOfPosting === doc.dateOfPosting)
@@ -198,7 +198,7 @@ router.get('/date/:dateOfPosting', (req, res, next) =>
                         {
                             type: 'GET',
                             description: 'GET all information for a posted item:',
-                            url: 'http://localhost:3000/search/'+doc._id
+                            url: 'http://localhost:3000/search/product/'+doc._id
                         }
                     }
                 }
@@ -228,7 +228,7 @@ router.get('/date/:dateOfPosting', (req, res, next) =>
 });
 
 //Get by product Id
-router.get('product/:productId', (req, res, next) => 
+router.get('/product/:productId', (req, res, next) => 
 {
     const id = req.params.productId;
 
