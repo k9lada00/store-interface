@@ -31,7 +31,7 @@ const authChecker = require('../auth/auth-checker');
 const process = require('../config/nodemon');
 
 // Post Product Information
-router.post('/', authChecker, upload.single('productImage1'), (req, res, next) => 
+router.post('/new', authChecker, upload.single('productImage1'), (req, res, next) => 
 {
     const product = new Product(
     {
@@ -45,6 +45,7 @@ router.post('/', authChecker, upload.single('productImage1'), (req, res, next) =
         dateOfPosting: req.body.dateOfPosting,
         deliveryType: req.body.deliveryType,
         sellerName: req.body.sellerName,
+        username: req.body.username,
         sellerContactInfo: req.body.sellerContactInfo
     });
 
@@ -63,8 +64,8 @@ router.post('/', authChecker, upload.single('productImage1'), (req, res, next) =
                 request: 
                 {
                     type: 'GET',
-                    descition: 'View all details of the posted item:',
-                    url: 'http://localhost:3000/search/'+result._id
+                    description: 'View all details of the posted item:',
+                    url: 'http://localhost:3000/search/product'+result._id
                 }
             }
         });
@@ -80,7 +81,7 @@ router.post('/', authChecker, upload.single('productImage1'), (req, res, next) =
 });
 
 //Change a product by Id
-router.patch('/:productId', authChecker, (req, res, next) => 
+router.patch('/update/:productId', authChecker, (req, res, next) => 
 {
     const id = req.params.productId;
     const updateOps = {};
@@ -102,7 +103,7 @@ router.patch('/:productId', authChecker, (req, res, next) =>
             {
                 type: 'GET',
                 description: 'View all details of the updated item:',
-                url: 'http://localhost:3000/search/'+id
+                url: 'http://localhost:3000/search/product'+id
             }
         });
     })
@@ -117,7 +118,7 @@ router.patch('/:productId', authChecker, (req, res, next) =>
 });
 
 //Delete a product
-router.delete('/:productId', authChecker, (req, res, next) => 
+router.delete('/product/:productId', authChecker, (req, res, next) => 
 {
     const id = req.params.productId;
     
